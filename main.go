@@ -67,8 +67,10 @@ func (w multiWeatherProvider) temperature(city string) (float64, error) {
 		select {
 		case temp := <-temps:
 			sum += temp
-		case err := <- errs:
+		case err := <-errs:
 			return 0, err
+		case <-time.After(5000 * time.Millisecond):
+			return 0, errors.New("Timed out after 5 seconds.")
 		}
 	}
 
