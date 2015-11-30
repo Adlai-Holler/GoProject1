@@ -1,0 +1,9 @@
+Notes from first Go Project https://howistart.org/posts/go/1
+
+It feels very Schwifty, except lamer since optionals are less powerful.
+Go Channels seem like ReactiveCocoa.SignalProducer.buffer.
+Love the balance between modernness (package orientation, type inference,
+mixins etc) and old-school (static typing, true binaries).
+God the Standard Library is so powerful. No UIKit, but Cocoa eat your heart out.
+Go interfaces <-> Swift protocols
+Tags – like the `json:"temp"` on the structs, are awesome. It'd be ideal to use protocols to make this stricter, but I don't know of any language that can do that.
