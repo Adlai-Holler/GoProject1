@@ -43,15 +43,33 @@ type weatherProvider interface {
 type multiWeatherProvider []weatherProvider
 
 func (w multiWeatherProvider) temperature(city string) (float64, error) {
-	sum := 0.0
+	// Make a channel for temperatures and one for errors.
+	// Each provider will push a value into only one.
+	// Similar to a SignalProducer.buffer
+	temps := make(chan float64, len(w))
+	errs := make(chan error, len(w))
 
 	for _, provider := range w {
-		k, err := provider.temperature(city)
-		if err != nil {
+		go func(p weatherProvider) {
+			k, err := p.temperature(city)
+			if err != nil {
+				errs <- err
+				return
+			}
+
+			temps <- k
+		}(provider)
+	}
+
+	sum := 0.0
+
+	for i := 0; i < len(w); i++ {
+		select {
+		case temp := <-temps:
+			sum += temp
+		case err := <- errs:
 			return 0, err
 		}
-
-		sum += k
 	}
 
 	return sum / float64(len(w)), nil
